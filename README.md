@@ -11,6 +11,8 @@
 
 ## 메타버스 게임(Flutter, Arduino)
 
+<a href="https://cjk09083.tistory.com/category/%EB%A9%94%ED%83%80%EB%B2%84%EC%8A%A4%EA%B2%8C%EC%9E%84">작업일지(티스토리)</a>
+
 <div align="center">
 <img src="https://user-images.githubusercontent.com/87401241/193865978-55b17eec-f9ad-41bf-a17c-2ad36dd450ee.png" width="60%"/>
 </div></br>
