@@ -12,7 +12,7 @@
 ## 메타버스 게임(Flutter, Arduino)
 
 <div align="center">
-<img src="https://user-images.githubusercontent.com/87401241/193865978-55b17eec-f9ad-41bf-a17c-2ad36dd450ee.png" width="30%"/>
+<img src="https://user-images.githubusercontent.com/87401241/193865978-55b17eec-f9ad-41bf-a17c-2ad36dd450ee.png" width="60%"/>
 </div></br>
 
 ## 목적
