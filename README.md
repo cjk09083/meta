@@ -11,6 +11,10 @@
 
 ## 메타버스 게임(Flutter, Arduino)
 
+<div align="center">
+<img src="https://user-images.githubusercontent.com/87401241/193865978-55b17eec-f9ad-41bf-a17c-2ad36dd450ee.png" width="30%"/>
+</div></br>
+
 ## 목적
 - 집에있는 TV와 리모콘, 스마트폰으로 즐길수 있는 메타버스 게임 제작
 - Flutter(Dart)로 게임앱을 Arduino로 리모콘을 제작 
