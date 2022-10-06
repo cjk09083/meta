@@ -1,2 +1,6 @@
 # This is a generated file; do not edit or check into version control.
-flutter_blue_plus=/Users/cjk/development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_blue_plus-1.3.0/
+flutter_blue_plus=/Users/cjk/development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_blue_plus-1.3.1/
+flutter_inappwebview=/Users/cjk/development/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_inappwebview-5.4.4+3/
+webview_flutter=/Users/cjk/development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-3.0.4/
+webview_flutter_android=/Users/cjk/development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_android-2.10.4/
+webview_flutter_wkwebview=/Users/cjk/development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter_wkwebview-2.9.5/

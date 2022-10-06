@@ -1,10 +1,18 @@
 import 'dart:async';
+import 'dart:developer' as dev;
 
+import 'package:ble_example/webView.dart';
+import 'package:ble_example/webView3.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+
+import 'chrome_safari_browser_example.screen.dart';
 
 class DeviceScreen extends StatefulWidget {
   DeviceScreen({Key? key, required this.device}) : super(key: key);
+  // final ChromeSafariBrowser browser = new MyChromeSafariBrowser();
+
   // 장치 정보 전달 받기
   final BluetoothDevice device;
 
@@ -33,6 +41,8 @@ class _DeviceScreenState extends State<DeviceScreen> {
   //
   Map<String, List<int>> notifyDatas = {};
 
+
+
   @override
   initState() {
     super.initState();
@@ -46,6 +56,13 @@ class _DeviceScreenState extends State<DeviceScreen> {
       // 연결 상태 정보 변경
       setBleConnectionState(event);
     });
+
+    // widget.browser.addMenuItem(new ChromeSafariBrowserMenuItem(
+    //   id: 1,
+    //   label: 'Custom item menu 1',
+    //   action: (url, title) {
+    //     print('Custom item menu 1 clicked!');
+    //   }));
     // 연결 시작
     connect();
   }
@@ -121,7 +138,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
         debugPrint('connection successful');
         print('start discover service');
         List<BluetoothService> bleServices =
-            await widget.device.discoverServices();
+        await widget.device.discoverServices();
         setState(() {
           bluetoothService = bleServices;
         });
@@ -141,7 +158,10 @@ class _DeviceScreenState extends State<DeviceScreen> {
 
             // 쓰기 가능한 uuid면 hello 전송
             if (c.properties.writeWithoutResponse) {
-              c.write([104, 101, 108, 108, 111]);
+              String msg = "hello";
+              List<int> splitMsg = msg.codeUnits;
+              dev.log('ascii : $splitMsg');
+              c.write(splitMsg);
             }
 
             // notify나 indicate가 true면 디바이스에서 데이터를 보낼 수 있는 캐릭터리스틱이니 활성화 한다.
@@ -185,6 +205,19 @@ class _DeviceScreenState extends State<DeviceScreen> {
       }
     });
 
+    Navigator.push(context,
+      MaterialPageRoute(builder: (context) => WebPage3()),
+    );
+
+    // widget.browser.handleMethod(call)
+
+    // await widget.browser.open(
+    //     url: Uri.parse("https://app.gather.town/app/WF84QVdIhiE0smuf/home"),
+    //     options: ChromeSafariBrowserClassOptions(
+    //         android: AndroidChromeCustomTabsOptions(
+    //             shareState: CustomTabsShareState.SHARE_STATE_OFF),
+    //         ios: IOSSafariOptions(barCollapsingEnabled: true)));
+
     return returnValue ?? Future.value(false);
   }
 
@@ -207,43 +240,43 @@ class _DeviceScreenState extends State<DeviceScreen> {
       ),
       body: Center(
           child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              /* 연결 상태 */
-              Text('$stateText'),
-              /* 연결 및 해제 버튼 */
-              OutlinedButton(
-                  onPressed: () {
-                    if (deviceState == BluetoothDeviceState.connected) {
-                      /* 연결된 상태라면 연결 해제 */
-                      disconnect();
-                    } else if (deviceState ==
-                        BluetoothDeviceState.disconnected) {
-                      /* 연결 해재된 상태라면 연결 */
-                      connect();
-                    }
-                  },
-                  child: Text(connectButtonText)),
-            ],
-          ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  /* 연결 상태 */
+                  Text('$stateText'),
+                  /* 연결 및 해제 버튼 */
+                  OutlinedButton(
+                      onPressed: () {
+                        if (deviceState == BluetoothDeviceState.connected) {
+                          /* 연결된 상태라면 연결 해제 */
+                          disconnect();
+                        } else if (deviceState ==
+                            BluetoothDeviceState.disconnected) {
+                          /* 연결 해재된 상태라면 연결 */
+                          connect();
+                        }
+                      },
+                      child: Text(connectButtonText)),
+                ],
+              ),
 
-          /* 연결된 BLE의 서비스 정보 출력 */
-          Expanded(
-            child: ListView.separated(
-              itemCount: bluetoothService.length,
-              itemBuilder: (context, index) {
-                return listItem(bluetoothService[index]);
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return Divider();
-              },
-            ),
-          ),
-        ],
-      )),
+              /* 연결된 BLE의 서비스 정보 출력 */
+              Expanded(
+                child: ListView.separated(
+                  itemCount: bluetoothService.length,
+                  itemBuilder: (context, index) {
+                    return listItem(bluetoothService[index]);
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider();
+                  },
+                ),
+              ),
+            ],
+          )),
     );
   }
 

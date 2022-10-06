@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'dart:io';
 
 import 'device_screen.dart';
 
-void main() {
+Future<void> main() async {
+
+  if (Platform.isAndroid) {
+    await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+  }
+
   runApp(MyApp());
 }
 
@@ -36,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     // 블루투스 초기화
     initBle();
+    scan();
   }
 
   void initBle() {
@@ -58,7 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
       flutterBlue.startScan(timeout: Duration(seconds: 4));
       // 스캔 결과 리스너
       flutterBlue.scanResults.listen((results) {
+
         scanResultList = results;
+        // 이름없는 기기는 제외
+        scanResultList.removeWhere((element) => element.device.name.isEmpty);
         // UI 갱신
         setState(() {});
       });
