@@ -1,8 +1,7 @@
-#include <IRremote.hpp>
-// #include <IRremote.h>
+//#include <IRremote.hpp>
+#include <IRremote.h>
 // #include <IRremoteInt.h>
 
-// IrSender irsender;
 int val[10];
 int adcRef = 14 - 3;
 String cmdStr[][3] = {
@@ -70,9 +69,6 @@ void chkValue(int num, int val){
   for (int i=0; i <= 2; i++ ){
     int set = setArr[i];
     if(set > 10 ) break;
-    // Serial.print(" ");
-    // Serial.print(set); 
-    // Serial.print(cmdStr[num][set]);
     sendMsg(num,set);
     Serial.print(",");
     delay(10);
@@ -81,13 +77,9 @@ void chkValue(int num, int val){
 }
 
 void sendMsg(int num, int set){
-  
   uint16_t sAddress = 0xC0DA;
-//  if(num==0 && set ==0) sAddress = 0x4;
   uint8_t sCommand = cmdHex[num][set];
   uint8_t sRepeats = 0;
   Serial.print(sCommand,HEX);
   IrSender.sendNEC(sAddress, sCommand, sRepeats);
-  // irsender.sendNFC(0xa90,32);
-
 }
