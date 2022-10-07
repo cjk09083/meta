@@ -7,7 +7,7 @@ int RECV_PIN = 2;
 String dir = "err";
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   BT.begin(9600);
   IrReceiver.begin(RECV_PIN, ENABLE_LED_FEEDBACK);
 
