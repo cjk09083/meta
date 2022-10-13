@@ -13,41 +13,9 @@ void setup() {
 
 }
 
-void dump(int val) {
-  Serial.print(val);
-  switch (val) {
-    case 64:
-      dir = "up";
-      break;
-    case 67:
-      dir = "right";
-      break;
-    case 66:
-      dir = "left";
-      break;
-    case 65:
-      dir = "down";
-      break;
-    case 68:
-      dir = "enter";
-      break;
-    default:
-      dir = "err";
-      break;
-  }
-
-  if(val==0) return;
-  Serial.print(" (");
-  Serial.print(dir);
-  BT.println(dir);
-  Serial.print(")");
-  Serial.println();
-}
-
 void loop() {
   if (IrReceiver.decode()){
     Serial.println(IrReceiver.decodedIRData.command);
-//    dump(IrReceiver.decodedIRData.command);
     IrReceiver.resume();
     return;                  
   }
