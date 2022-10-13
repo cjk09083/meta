@@ -1,87 +1,94 @@
-import RPi.GPIO as GPIO
-from time import time
+# python -m pip install selenium
+# python -m pip install requests
+# python -m pip install webdriver_manager
+# python -m pip install user_agent
+# python -m pip install pyautogui
 
-PIN = 12
+import requests, math, pyautogui
+from time import sleep
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.action_chains import ActionChains
 
-KEYMAP = {
-    1526924029 : 'top',
-    1526940349 : 'left',
-    1526932189 : 'center',
-    1526972989 : 'right',
-    1526956669 : 'bottom',
-    }
+# from subprocess import CREATE_NO_WINDOW 
+from user_agent import generate_user_agent
+from datetime import time, datetime, date, timedelta
+from random import random, uniform, randint
+import numpy as np
 
-def setup():
-    GPIO.setmode(GPIO.BOARD) # Numbers GPIOs by physical location
-    GPIO.setup(PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-def binary_aquire(pin, duration):
-    # aquires data as quickly as possible
-    t0 = time()
-    results = []
-    while (time() - t0) < duration:
-        results.append(GPIO.input(pin))
-    return results
 
-def on_ir_receive(pinNo, bouncetime=150):
-    # when edge detect is called (which requires less CPU than constant
-    # data acquisition), we acquire data as quickly as possible
-    data = binary_aquire(pinNo, bouncetime/1000.0)
-    # print(len(data))
-    if len(data) < bouncetime:
-        return
-    rate = len(data) / (bouncetime / 1000.0)
-    pulses = []
-    i_break = 0
-    # detect run lengths using the acquisition rate to turn the times in to microseconds
-    for i in range(1, len(data)):
-        if (data[i] != data[i-1]) or (i == len(data)-1):
-            pulses.append((data[i-1], int((i-i_break)/rate*1e6)))
-            i_break = i
-    # decode ( < 1 ms "1" pulse is a 1, > 1 ms "1" pulse is a 1, longer than 2 ms pulse is something else)
-    # does not decode channel, which may be a piece of the information after the long 1 pulse in the middle
-    outbin = ""
-    for val, us in pulses:
-        if val != 1:
-            continue
-        if outbin and us > 2000:
-            break
-        elif us < 1000:
-            outbin += "0"
-        elif 1000 < us < 2000:
-            outbin += "1"
-    try:
-        return int(outbin, 2)
-    except ValueError:
-    # probably an empty code
-        return None
 
-def destroy():
-    GPIO.cleanup()
+WIDTH = 320                         # 화면 너비
+HEIGHT = 720                        # 화면 높이
+
+TITLE = "게더타운"
+
+class GetherTown():
+    def __init__(self):
+        super().__init__()
+        print("init")
+        self.Open()
+        
+    def Open(self):
+        print("게더타운 오픈")
+        try:
+            option = webdriver.ChromeOptions()
+            option.add_experimental_option("useAutomationExtension", False)     
+            option.add_experimental_option("excludeSwitches", ['enable-automation'])
+
+            # 봇으로 의심받지 않게 User-agent 추가
+            option.add_argument('--no-sandbox')
+            option.add_argument('--disable-dev-shm-usage')
+            userAgent = generate_user_agent(navigator='chrome',os='win', device_type='desktop')
+
+            print(userAgent)
+            option.add_argument(f'user-agent={userAgent}')
+            
+            service = Service("/usr/lib/chromium-browser/chromedriver")
+            driver = webdriver.Chrome(service=service, options=option)
+        except Exception as e:
+            print("크롬 연결실패",e)
+
+        targetUrl = 'http://m.naver.com'
+        targetUrl = "https://app.gather.town/app/WF84QVdIhiE0smuf/home"
+        targetUrl = "https://zep.us/play/yxWJjz"
+        
+        #driver.fullscreen_window()
+        #driver.maximize_window()
+        driver.implicitly_wait(10) # seconds
+        driver.get(targetUrl)
+        
+        self.driver = driver
+        
+        #sleep(100)
+        for i in range (1000):
+            sleep(1)
+            driver.find_elements(By.TAG_NAME, "body")[0].send_keys("1")
+            ActionChains(driver).key_down("s").pause(0.1).key_up("s").perform()
+            print("sendKeys")
+            
     
-if __name__ == "__main__":
-    setup()
+    def Close(self):
+        driver = self.driver
+        print('종료 3초전')
+        sleep(1)
+        print('종료 2초전')
+        sleep(1)
+        print('종료 1초전')
+        sleep(1)
+        print('종료')
+        driver.quit()
+
+    def rand_sec(self, start,end):
+        result = uniform(start, end)
+        return result            
+
+if __name__ == "__main__" :
     try:
-        print("Starting IR Listener")
-        while True:
-            #print("Waiting for signal")
-            GPIO.wait_for_edge(PIN, GPIO.FALLING)
-            code = on_ir_receive(PIN)
-            if code:
-                try:
-                    key = KEYMAP[code]
-                except KeyError:
-                    key = "ERROR"
-                print(str(hex(code)),"(",str(code),")",key)
-            #else:
-            #    print("Invalid code")
-    except KeyboardInterrupt as e:
+        gt = GetherTown()
+
+    except Exception as e:
         print(e)
-        pass
-    except RuntimeError as e:
-        # this gets thrown when control C gets pressed
-        # because wait_for_edge doesn't properly pass this on
-        print(e)
-        pass
-    print("Quitting")
-    destroy()
