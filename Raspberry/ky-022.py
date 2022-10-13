@@ -1,7 +1,5 @@
-
-
+import RPi.GPIO as GPIO
 from time import time
-import serial
 
 PIN = 12
 
