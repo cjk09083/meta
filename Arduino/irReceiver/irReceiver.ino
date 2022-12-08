@@ -1,28 +1,58 @@
 #include <IRremote.h>
 #include <IRremoteInt.h>
-#include <SoftwareSerial.h>
-SoftwareSerial BT(4,3);
 
 int RECV_PIN = 2;
 String dir = "err";
+int storage = 0;
 
 void setup() {
   Serial.begin(115200);
-  BT.begin(9600);
   IrReceiver.begin(RECV_PIN, ENABLE_LED_FEEDBACK);
 
 }
 
 void loop() {
   if (IrReceiver.decode()){
-    Serial.println(IrReceiver.decodedIRData.command);
-    IrReceiver.resume();
-    return;                  
+    if (IrReceiver.decodedIRData.flags & IRDATA_FLAGS_WAS_OVERFLOW) {
+//        Serial.println(F("Overflow detected"));
+        Serial.println("0");
+    } else {
+      int cmd = IrReceiver.decodedIRData.command;
+//      if (cmd > 100) {Serial.print("Over!! "); }
+//      if (cmd < 1) {Serial.print("Zero!! "); }
+      if(0 < cmd && cmd < 100){
+  //      IrReceiver.printIRResultRawFormatted(&Serial, true);  // Output the results in RAW format
+  //      IrReceiver.compensateAndPrintIRResultAsCArray(&Serial, true); // Output the results as uint8_t source code array of ticks
+  //      IrReceiver.printIRResultShort(&Serial);
+//        Serial.print("( ");
+//        Serial.print(cmd,HEX);
+//        Serial.print(" ) => ");
+          Serial.println(cmd);
+      }      
+      IrReceiver.resume();
+      storage = cmd;
+      return;         
+    }   
   }
-
-  if(BT.available()>0){
-    Serial.write(BT.read());  
-  }
-
-  delay(10);
+  
+//  delay(5);
 }
+
+
+//#include <IRremote.h>
+//#include <IRremoteInt.h>
+//
+//IRrecv energen(2);
+//decode_results results;
+//
+//void setup() {
+//  Serial.begin(115200);
+//  energen.enableIRIn();
+//}
+//
+//void loop() {
+//  if(energen.decode(&results)){
+//    Serial.println(results.value,DEC);
+//    energen.resume();
+//  }
+//}

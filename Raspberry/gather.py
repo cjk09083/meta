@@ -50,9 +50,8 @@ class GetherTown():
             option.add_experimental_option("useAutomationExtension", False)     
             option.add_experimental_option("excludeSwitches", ['enable-automation'])
 
-            # 쿠키 사용
+            # 봇으로 의심받지 않게 User-agent 추가
             option.add_argument('--user-data-dir=chrome-data')
-            # User-agent 추가
             option.add_argument('--no-sandbox')
             option.add_argument('--disable-dev-shm-usage')
             userAgent = generate_user_agent(navigator='chrome',os='win', device_type='desktop')

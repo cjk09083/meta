@@ -84,6 +84,8 @@ class GetherTown():
 
         targetUrl = 'http://m.naver.com'
         targetUrl = "게더타운 링크"
+        targetUrl = "https://app.gather.town/app/WF84QVdIhiE0smuf/home"
+
         
         # driver.fullscreen_window()
         #driver.maximize_window()
