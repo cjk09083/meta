@@ -34,8 +34,7 @@ void loop() {
       return;         
     }   
   }
-  
-//  delay(5);
+  delay(1);
 }
 
 

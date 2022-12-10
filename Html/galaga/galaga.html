@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="utf-8">
+    <title>galaga</title>
+  </head>
+  <body style="background-color: black; display: flex; height: 100%;">
+    <span> 게임 레이어 </span>
+    <div style="margin: auto;">
+      <div id="gamearea"><div class="emularity-splash-screen" style="top: 0px; left: 0px; right: 0px; color: white; background-color: black; display: none;"><img class="emularity-splash-image" src="https://www.classicgamesarcade.com/em/loading/loading.gif" style="display: block; margin-left: auto; margin-right: auto;"><span class="emularity-splash-title" style="display: block; width: 100%; margin-top: 1em; margin-bottom: 1em; text-align: center; font: 24px sans-serif;">Launching Game. Please Wait. When game starts press key 5 to add credits and 1 to start.</span><table class="emularity-progress-indicator" data-has-custom-c-s-s="false" style="width: 75%; color: white; background-color: black; margin-left: auto; margin-right: auto; border-collapse: separate; border-spacing: 2px;"><tbody><tr style="text-align: center;"><td style="position: relative; background-color: white; color: black;" class="emularity-download-success"><span class="emularity-download-title" style="min-height: 24px; white-space: nowrap; font-weight: bold;">Game File</span><span class="emularity-download-status" style="position: absolute; left: 0px; padding-left: 0.5em;">✔</span></td></tr></tbody></table></div></div>
+      
+      <canvas id="canvas" style="display: block;margin: 0px auto;image-rendering: pixelated;cursor: default;" moz-opaque=""></canvas>
+    </div>
+    <script type="text/javascript" src="https://www.classicgamesarcade.com/es6-promise.js"></script>
+    <script type="text/javascript" src="https://www.classicgamesarcade.com/browserfs.min.js"></script>
+    <script type="text/javascript" src="https://www.classicgamesarcade.com/loader.js"></script>
+    <script type="text/javascript">
+        var chkCnt = 0
+        var emulator = new Emulator(document.querySelector("#canvas"), null,
+            new MAMELoader(MAMELoader.driver("galaga"),
+                            MAMELoader.nativeResolution(224, 256),
+                            MAMELoader.scale(3),
+                            MAMELoader.emulatorJS("mamegalaga.js"),
+                            MAMELoader.mountFile("galaga.zip",
+                                                MAMELoader.fetchFile("Game File",						
+                                                "galaga.zip"))))
+      emulator.start({ waitAfterDownloading: false })
+        //adam 11/12/2020
+        //keeps the title tag the same as game changes it	  
+        try {
+            window.originalTitle = document.title; // save for future
+            Object.defineProperty(document, 'title', {
+                get: function() {return originalTitle},
+                set: function() {}
+            });
+        } catch (e) {}	
+        //end adam 11/12/2020
+        
+        var screenHeight = window.innerHeight 
+        var iframeHeight = Math.floor(screenHeight * 0.95) + 'px'
+        console.log("iframe 크기 :"+iframeHeight)
+        window.onload = function() {
+          setHeight();
+
+          function setHeight() {  
+            setTimeout(function() {
+              var nowheight = document.getElementById('canvas').style.height
+              console.log("canvas 크기 :"+nowheight)
+              if(iframeHeight == nowheight){
+                chkCnt += 1
+                if (chkCnt > 10){
+                  console.log("canvas 크기 변경 완료:"+iframeHeight)
+                  return
+                }
+              }
+              console.log("canvas 크기 변경("+chkCnt+"):"+iframeHeight)
+              // document.getElementById('canvas').setAttribute( 'height', iframeHeight)
+              document.getElementById('canvas').style.height = iframeHeight
+              document.getElementById('canvas').style.width = ''
+              setHeight();
+            }, 2000);
+          }
+
+        }
+    </script>
+    
+  </body>
+</html>
