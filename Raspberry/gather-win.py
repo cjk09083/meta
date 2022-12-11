@@ -131,7 +131,7 @@ KEYMAP_STR = {
     }
 
 
-
+ARROW_DELAY = 150
 PORT = "COM5"
 BAUD = "115200"
 ports = list(serial.tools.list_ports.comports())
@@ -298,7 +298,7 @@ class GetherTown():
         key = ''
 
         while True:
-            input_ms, key, code = self.getSignal(key, input_ms)
+            input_ms, key, code = self.getSignal(key, input_ms, 500)
             if code == 0 :
                 continue
 
@@ -394,7 +394,7 @@ class GetherTown():
 
         while True:
             if not self.gameMode:
-                input_ms, key, code = self.getSignal(key, input_ms)
+                input_ms, key, code = self.getSignal(key, input_ms, 150)
                 if ghost_ms != 0:
                     duration = (datetime.now() - ghost_ms).total_seconds() * 1000 
                     if duration> 500:
@@ -403,7 +403,7 @@ class GetherTown():
                         ghost_ms = 0
                 if arrow_ms != 0:
                     duration = (datetime.now() - arrow_ms).total_seconds() * 1000 
-                    if duration > 200:
+                    if duration > ARROW_DELAY:
                         ActionChains(driver).key_up(before_key).perform()
                         print("키보드",KEYMAP_STR[str(before_code)],"키 뗌",int(duration),"ms")
                         arrow_ms = 0
@@ -586,12 +586,12 @@ class GetherTown():
                 input_ms = datetime.now()
 
                 while True:
-                    input_ms, key, code = self.getSignal(key, input_ms, 200)
+                    input_ms, key, code = self.getSignal(key, input_ms, 150)
                     # key = keyboard.read_key()
                     # print(key)
                     if arrow_ms != 0:
                         duration = (datetime.now() - arrow_ms).total_seconds() * 1000 
-                        if duration > 200:
+                        if duration > ARROW_DELAY * 2:
                             ActionChains(driver).key_up(before_key).perform()
                             print("키보드",KEYMAP_STR[str(before_code)],"키 뗌",int(duration),"ms")
                             arrow_ms = 0
@@ -664,7 +664,7 @@ class GetherTown():
         # css-fib3fn <<< 게임 종료 버튼
 
 
-    def getSignal(self, before_key, then, delay = 500):
+    def getSignal(self, before_key, then, delay = 200):
         output_ms = then
         if ser.readable():
             res = ser.readline().strip().decode('utf-8')
@@ -672,6 +672,7 @@ class GetherTown():
                 code = res
                 # print(code)
                 if int(code) > 60:
+                    print(code,'ERROR')
                     return output_ms, 'ERROR', 0
                     
                 try:
