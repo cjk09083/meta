@@ -84,7 +84,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',)
 
 gatherUrl = "https://app.gather.town/app/rdFosTQmwzU9IZl3/jjjjj"
-gatherUrl = "https://app.gather.town/app/tpxShwZn97RLCqMm/cjk09083"
+# gatherUrl = "https://app.gather.town/app/tpxShwZn97RLCqMm/cjk09083"
 blackUrl = "https://cjk09083.cafe24.com/gather/black.html"
 
 KEYMAP = {
@@ -332,6 +332,10 @@ class GetherTown():
                 if self.btnCategory < 0:
                     self.btnCategory = 0
                 allItems, itemsCnt = self.moveCustom(allItems, itemsCnt, True)
+            elif code == 60:
+                self.goBlack()
+                print("goBlack")
+                return
             sleep(0.1)
 
         sleep(0.1)
