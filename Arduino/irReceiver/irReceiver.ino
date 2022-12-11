@@ -8,7 +8,7 @@ int storage = 0;
 void setup() {
   Serial.begin(115200);
   IrReceiver.begin(RECV_PIN, ENABLE_LED_FEEDBACK);
-
+  delay(100);
 }
 
 void loop() {
@@ -29,6 +29,7 @@ void loop() {
 //        Serial.print(" ) => ");
           Serial.println(cmd);
       }      
+      
       IrReceiver.resume();
       storage = cmd;
       return;         

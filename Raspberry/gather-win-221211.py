@@ -5,14 +5,7 @@
 # python -m pip install beautifulsoup4 lxml
 # python -m pip install webdriver_manager
 
-# 콘솔창 제거 : pyinstaller -w --collect-data user_agent --onefile Raspberry/gather-win.py
-# 콘솔창 유지 : pyinstaller --uac-admin --noconfirm --collect-data user_agent --onefile Raspberry/gather-win.py
-
 import serial, pyautogui
-import sys, os, getpass
-import logging, traceback
-import serial.tools.list_ports
-
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -21,15 +14,12 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-from webdriver_manager.chrome import ChromeDriverManager
 
 # from subprocess import CREATE_NO_WINDOW 
 from user_agent import generate_user_agent
 from datetime import time, datetime, date, timedelta
 from random import random, uniform, randint
 
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
 
 """
 버블버블    : https://cjk09083.cafe24.com/gather/bublbobl/bublbobl.html
@@ -37,51 +27,7 @@ from PyQt5.QtCore import *
 갤러그      : https://cjk09083.cafe24.com/gather/galaga/galaga.html
 
 테트리스    : https://cjk09083.cafe24.com/gather/tetris/tetris.html
-
 """
-
-
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
-
-#UI파일 연결
-#단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
-BASE_DIR = os.path.dirname(os.path.abspath(__file__)) 
-
-BASE_DIR = resource_path("")
-
-LOG_DIR = ""
-username = getpass.getuser()
-
-try:
-    LOG_DIR = os.path.join("C:\\Users", username,"Desktop","1255")
-    if not(os.path.isdir(LOG_DIR)):
-        os.makedirs((os.path.join(LOG_DIR)))
-        print("로그 폴더 생성",LOG_DIR)
-except:
-    print("로그 폴더 생성 실패")
-
-LOG_TIME = str(datetime.now().replace(microsecond=0)).replace(':', '-')
-LOG_PATH = LOG_DIR +"\\Log "+LOG_TIME+".txt"
-LOG_FILE = open(LOG_PATH, "w")
-print("로그 파일 생성",LOG_PATH)
-LOG_FILE.close()
-
-ERR_PATH = LOG_DIR +"\\Error.log"
-START_TIME = str(datetime.now().replace(microsecond=0))
-
-logging.basicConfig(
-    filename=ERR_PATH, 
-    level=logging.ERROR,
-    format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',)
 
 gatherUrl = "https://app.gather.town/app/rdFosTQmwzU9IZl3/jjjjj"
 gatherUrl = "https://app.gather.town/app/tpxShwZn97RLCqMm/cjk09083"
@@ -131,31 +77,23 @@ KEYMAP_STR = {
     }
 
 
-
 PORT = "COM5"
-BAUD = "115200"
-ports = list(serial.tools.list_ports.comports())
-for p in ports:
-    print (p)
-    if "Arduino Uno" in p.description:
-        print ("This is an Arduino!",p.name)
-        PORT = p.name
-
 # PORT = "/dev/ttyACM0"
+BAUD = "115200"
 ser = serial.Serial(port=PORT, baudrate=BAUD, timeout = 0.1)
 
 GAME_URL = [
-    'https://cjk09083.cafe24.com/gather/bublbobl/bublbobl.html',
-    'https://cjk09083.cafe24.com/gather/galaga/galaga.html',
-    'https://cjk09083.cafe24.com/gather/tetris/tetris.html',
+    'bublbobl.html',
+    'galaga.html',
+    'tetris.html',
 ]
 
 
 TITLE = "게더타운"
 
-ext_file = 'C:/Users/'+username+'/Downloads/extension.zip'
+ext_file = 'C:/Users/USER/Downloads/extension.zip'
 # ext_file = '/usr/lib/extension.zip'
-driver_path = "C:/Users/"+username+"/Downloads/chromedriver.exe"
+driver_path = "C:/Users/USER/Downloads/chromedriver.exe"
 # driver_path = '/usr/lib/chromium-browser/chromedriver'
 
 class GetherTown():
@@ -172,9 +110,7 @@ class GetherTown():
             option.add_experimental_option("useAutomationExtension", False)     
             option.add_experimental_option("excludeSwitches", ['enable-automation'])
 
-            COOKIE_DIR = LOG_DIR+"\\chrome-cookie"
-            print("쿠키 경로:",COOKIE_DIR)
-            # option.add_argument("--user-data-dir="+COOKIE_DIR)
+            # option.add_argument('--user-data-dir=chrome-data')
             option.add_argument('--no-sandbox')
             option.add_argument('--disable-dev-shm-usage')
             option.add_extension(ext_file)     # 음소거 익스텐션 추가
@@ -186,39 +122,29 @@ class GetherTown():
             print(userAgent)
             option.add_argument(f'user-agent={userAgent}')
             
-            service = Service(ChromeDriverManager().install())
-            # service = Service(driver_path)
+            # service = Service(ChromeDriverManager().install())
+            service = Service(driver_path)
             driver = webdriver.Chrome(service=service, options=option)
         except Exception as e:
             print("크롬 연결실패",e)
 
-        driver.implicitly_wait(10) # seconds
+        # driver.implicitly_wait(10) # seconds
         driver.get(blackUrl)
-        # driver.set_window_position(x, y, windowHandle='current')
         self.driver = driver
         wait = WebDriverWait(driver, 25)
         self.gatherMode = True
         size = driver.get_window_size()
         width = size.get("width")
         height = size.get("height")
-        position = driver.get_window_position()
-        x = position.get('x')
-        y = position.get('y')
-        print("height : "+str(height)+", "+"width : "+str(width))
-        print("x : "+str(x)+", "+"y : "+str(y))
-
         pyautogui.moveTo(0,height-1) ## 절대좌표
         sleep(1)
         print("goBlack")
         self.goBlack()
 
-        # self.gatherMode = False
-        # self.goGather()
-
     def goBlack(self):
         if not self.gatherMode:
             return False
-        # blackUrl = 'https://cjk09083.cafe24.com/gather/bublbobl/bublbobl.html'
+
         self.gatherMode = False
         driver = self.driver
         driver.get(blackUrl)
@@ -232,7 +158,7 @@ class GetherTown():
             if code == 0 :
                 continue
 
-            if code < 60 :
+            if code < 60  :
                 element = driver.find_element(By.TAG_NAME, 'body')
                 driver.execute_script("arguments[0].innerHTML = '<h1 style=\"color: white; margin: auto;\">게더타운으로 이동합니다</h1>';",element)
                 print("goGather")
@@ -280,7 +206,7 @@ class GetherTown():
                 except:
                     print('Wait for Edit',tryNum)
 
-            if tryNum > 10:
+            if tryNum > 20:
                 break
                 
             sleep(1)
@@ -403,7 +329,7 @@ class GetherTown():
                         ghost_ms = 0
                 if arrow_ms != 0:
                     duration = (datetime.now() - arrow_ms).total_seconds() * 1000 
-                    if duration > 200:
+                    if duration> 150:
                         ActionChains(driver).key_up(before_key).perform()
                         print("키보드",KEYMAP_STR[str(before_code)],"키 뗌",int(duration),"ms")
                         arrow_ms = 0
@@ -426,8 +352,7 @@ class GetherTown():
                 elif code < 30:
                     print("음소거")
                     pyautogui.FAILSAFE = False
-                    pyautogui.hotkey('alt', 'shift', 'm')    
-                    # sleep(0.5)        
+                    pyautogui.hotkey('alt', 'shift', 'm')            
                 elif code < 40:
                     isMoved = True
                     if key == 'g':
@@ -454,7 +379,6 @@ class GetherTown():
                                             self.goBlack()
                                             print("goBlack")
                                             break
-                                        input_ms = datetime.now()
                             except Exception as e:
                                 print("닫기버튼 없음",e)
                             Searching = False
@@ -565,12 +489,9 @@ class GetherTown():
 
 
         for i, iframe in enumerate(iframeList):
-            gameUrl = iframe.get_attribute('src')
+            gameUrl = iframe.get_attribute('src').split('/')[-1]
             # gamdId = iframe.get_attribute('id')
-            print("iframe url: '",gameUrl,"'", len(gameUrl))
-            if gameUrl == '':
-                break
-
+            print("iframe url",gameUrl)
             if gameUrl in GAME_URL:
                 print(gameUrl, "스위칭")
                 driver.switch_to.frame(iframe)
@@ -591,7 +512,7 @@ class GetherTown():
                     # print(key)
                     if arrow_ms != 0:
                         duration = (datetime.now() - arrow_ms).total_seconds() * 1000 
-                        if duration > 200:
+                        if duration> 100:
                             ActionChains(driver).key_up(before_key).perform()
                             print("키보드",KEYMAP_STR[str(before_code)],"키 뗌",int(duration),"ms")
                             arrow_ms = 0
@@ -638,8 +559,7 @@ class GetherTown():
                     elif code < 30:
                         print("음소거 ON/OFF")
                         pyautogui.FAILSAFE = False
-                        pyautogui.hotkey('alt', 'shift', 'm')    
-                        # sleep(0.5) 
+                        pyautogui.hotkey('alt', 'shift', 'm') 
                     elif code > 40 :
                         if (key == 'start'):
                             print("게임 시작")
@@ -651,14 +571,7 @@ class GetherTown():
                             ActionChains(driver).key_down('5').pause(0.05).key_up('5').perform()
                         else:
                             ActionChains(driver).key_down(key).pause(0.05).key_up(key).perform()
-            else :
-                print("게임페이지가 아님")
-                if ser.readable():
-                    res = ser.readline().strip().decode('utf-8')
-                    print(res)
-                self.gameMode = False
-                break
-            
+
         return False
         # gamearea << 게임 영역
         # css-fib3fn <<< 게임 종료 버튼
@@ -671,33 +584,15 @@ class GetherTown():
             if res and res != '0':
                 code = res
                 # print(code)
-                if int(code) > 60:
-                    return output_ms, 'ERROR', 0
-                    
                 try:
                     key = KEYMAP[code]
                 except KeyError:
                     key = "ERROR"
 
-                print("code",code) 
-                while ser.readable():
-                    #print(ser.readable())
-                    res = ser.readline().strip().decode('utf-8')
-                    if res and res != '0':
-                        code2 = res
-                        print("code2",code2)
-                        if code != code2:
-                            break
-                    else:
-                        break
-                
-                if key == 'm':
-                    delay = 1000
                 duration = (datetime.now() - then).total_seconds() * 1000
-                print(KEYMAP_STR[code],"(",code,")",int(duration),"ms""vs",delay,"ms")
+                print(KEYMAP_STR[code],"(",code,")",int(duration),"ms")
 
                 if key != 'ERROR' :
-
                     if (before_key == key and duration > delay) or before_key != key :
                         # ActionChains(driver).key_down(key).pause(0.05).key_up(key).perform()
                         output_ms = datetime.now()
@@ -722,33 +617,9 @@ class GetherTown():
         result = uniform(start, end)
         return result            
 
-
-    def appendLog(self, msg):
-        try:
-            textBrowser = self.printTV
-            # horScrollBar = textBrowser.horizontalScrollBar()
-            verScrollBar = textBrowser.verticalScrollBar()
-            scrollIsAtEnd = verScrollBar.maximum() - verScrollBar.value() <= 10
-
-            textBrowser.append(msg)
-
-            log = open(LOG_PATH, "a", encoding="UTF-8")
-            if msg =="동일":
-                log.write(msg)
-            else:
-                log.write(msg+"\n")
-            log.close()
-
-        except Exception as e:
-            print(e)
-            logging.error(traceback.format_exc())
-
 if __name__ == "__main__" :
     try:
-        app = GetherTown() 
-        # app.exec_()
-        # gt = GetherTown()
+        gt = GetherTown()
 
     except Exception as e:
         print(e)
-        logging.error(traceback.format_exc())

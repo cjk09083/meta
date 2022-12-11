@@ -7,8 +7,8 @@ int val[10];
 int pinGap = 8;
 int adcRef = 14 - pinGap;
 int mval = 0;
-int delay_ms = 10;
-bool isDebug = false;
+int delay_ms = 100;
+bool isDebug = true;
 String cmdStr[2][3][3] = {
   {
     {"A", "Z", "X"},
@@ -170,13 +170,7 @@ void sendMsg(int num, int pin, int set) {
     sRepeats = 5;
     type = 1;
   }
-
-  if((isDebug) || ( num == 0 && pin == 2 && set == 1)) {
-    sCommand = int(mval / 10);
-    if (sCommand >= 100){
-      sCommand = 99;
-    }
-  }
+  if (isDebug) sCommand = mval;
 
 //  Serial.print(sCommand, HEX);
 //  Serial.print(sCommand);
