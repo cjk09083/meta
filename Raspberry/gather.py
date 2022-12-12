@@ -9,7 +9,7 @@
 # pyinstaller -w --uac-admin --noconfirm --collect-data user_agent --onefile Desktop/gather-win.py
 
 # 콘솔창 유지 :
-# pyinstaller --uac-admin --noconfirm --collect-data user_agent --onefile Desktop/gather-win.py
+# pyinstaller --uac-admin --noconfirm --collect-data user_agent --onefile gather.py
 
 import serial, pyautogui
 import sys, os, getpass
@@ -77,7 +77,7 @@ LOG_FILE = open(LOG_PATH, "w")
 print("로그 파일 생성",LOG_PATH)
 LOG_FILE.close()
 
-ERR_PATH = LOG_DIR +"\\Error.log"
+ERR_PATH = LOG_DIR +"/Error.log"
 START_TIME = str(datetime.now().replace(microsecond=0))
 
 logging.basicConfig(
@@ -400,7 +400,7 @@ class GetherTown():
             
         if self.needCheck:
             self.needCheck = False
-            sleep(0.1)
+            sleep(1)
             try:
                 spanList = driver.find_elements(By.TAG_NAME,'span')
                 print("spanList",len(spanList))
@@ -410,9 +410,11 @@ class GetherTown():
                     if className == 'css-1h5x3dy':
                         print("Find it!!!!!")
                         span.click()
-                #driver.find_element(By.CLASS_NAME, 'css-1h5x3dy').click()
-            except:
-                print("카메라 혹은 마이크 연결됨")
+                        break
+                
+            except Exception as e:
+                print("카메라 혹은 마이크 연결됨",e)
+                driver.find_element(By.CLASS_NAME, 'css-1h5x3dy').click()
         else:         
             sleep(0.1)
             print("처음 위치로 리스폰")
