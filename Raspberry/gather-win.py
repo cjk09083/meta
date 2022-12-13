@@ -132,7 +132,7 @@ KEYMAP_STR = {
 
 
 ARROW_DELAY = 150
-PORT = "COM5"
+PORT = "COM1"
 BAUD = "115200"
 ports = list(serial.tools.list_ports.comports())
 for p in ports:
@@ -229,6 +229,12 @@ class GetherTown():
         key = ''
 
         while True:
+            element = driver.find_element(By.TAG_NAME, 'body')
+            driver.execute_script("arguments[0].innerHTML = '<h1 style=\"color: white; margin: auto;\">게더타운으로 이동합니다</h1>';",element)
+            print("goGather")
+            if self.goGather():
+                break
+
             input_ms, key, code = self.getSignal(driver, input_ms)
             if code == 0 :
                 continue
@@ -544,10 +550,23 @@ class GetherTown():
             colorDiv = colorBtn.find_elements(By.CLASS_NAME,'Layout')
             # print("colorDiv",len(colorDiv))
             colorList = colorDiv[3].find_elements(By.TAG_NAME,'button')
+            if (self.btnCategory == 0 and self.btnIndex[2] == 2) or self.btnIndex[2] == 0:
+                for i, color in enumerate(colorList):
+                    # print(i,"color",color.get_attribute('aria-selected'))
+                    if color.get_attribute('aria-selected') == 'true':
+                        print(i,"color 선택됨")
+                        self.btnIndex[2] = i
             # print("colorList : ",len(colorList),"idx:",self.btnIndex[0])
             
             itemsDiv = driver.find_element(By.CLASS_NAME, 'css-1xytt4v')
             itemList = itemsDiv.find_elements(By.TAG_NAME,'button')
+            if self.btnIndex[3] == 0:
+                for i, item in enumerate(itemList):
+                    # print(i,"item",item.get_attribute('aria-selected'))
+                    if item.get_attribute('aria-selected') == 'true':
+                        print(i,"item 선택됨")
+                        self.btnIndex[3] = i
+
             # print("itemList : ",len(itemList))
             
             first = buttonList[:4]
