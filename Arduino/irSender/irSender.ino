@@ -8,6 +8,8 @@ int pinGap = 8;
 int adcRef = 14 - pinGap;
 int mval = 0;
 int delay_ms = 10;
+int repeat = 2;
+int repeat_delay = 250;
 bool isDebug = false;
 String cmdStr[2][3][3] = {
   {
@@ -160,8 +162,8 @@ void sendMsg(int num, int pin, int set) {
   digitalWrite(5, 0);
   uint16_t sAddress = 0xC0DA; // 0x0102
   uint8_t sCommand = cmdHex[num][pin][set];
-  uint8_t sRepeats = 2;
-  int type = 2;     // [NEC, Sony, RC5, RC6]
+  uint8_t sRepeats = repeat;
+  int type = 3;     // [NEC, Sony, RC5, RC6]
 
   if(mval <0 || mval > 1100){
     sCommand = 60;
@@ -183,7 +185,10 @@ void sendMsg(int num, int pin, int set) {
   
   switch(type){
     case 2: 
-        IrSender.sendSony(sAddress, sCommand, sRepeats);              
+//        for(int i=0; i < repeat; i++){
+          IrSender.sendSony(sAddress, sCommand, sRepeats);
+//          delay(repeat_delay);
+//        }              
         break;  
     case 3:  
         IrSender.sendRC5(sAddress, sCommand, sRepeats);              

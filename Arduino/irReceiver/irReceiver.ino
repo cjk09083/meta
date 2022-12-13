@@ -4,6 +4,7 @@
 int RECV_PIN = 2;
 String dir = "err";
 int storage = 0;
+long input_ms = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -27,11 +28,18 @@ void loop() {
 //        Serial.print("( ");
 //        Serial.print(cmd,HEX);
 //        Serial.print(" ) => ");
-          Serial.println(cmd);
-      }      
-      
+          long duration = millis() - input_ms;
+          if((cmd != storage)|| duration > 50){
+//            Serial.print(duration);
+//            Serial.print(":");
+            Serial.println(cmd);
+            input_ms= millis();
+          }
+          storage = cmd;
+      }
+//      else{Serial.println(cmd);}
       IrReceiver.resume();
-      storage = cmd;
+      
       return;         
     }   
   }
