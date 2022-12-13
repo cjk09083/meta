@@ -12,11 +12,11 @@ bool isDebug = false;
 String cmdStr[2][3][3] = {
   {
     {"A", "Z", "X"},
-    {"B", "6", "G"},
-    {"Select", "3", "E"}
+    {"B", "6", "E"},
+    {"Start", "3", "G"}
   },
   {
-    {"Start", "End", "Mute"},
+    {"Select", "End", "Mute"},
     {"Back", "Up", "Down"},
     {"Right", "Left", "Power"}
   }
@@ -25,11 +25,11 @@ String cmdStr[2][3][3] = {
 int cmdHex[2][3][3] = {   //          224       311       369
   {
     {44, 34, 33},   // A0 - D8   A        Z         X
-    {43, 30, 32},   // A0 - D9   B        6         G
-    {42, 23, 31}    // A0 - D10  Select   3         E
+    {43, 30, 31},   // A0 - D9   B        6         E
+    {41, 23, 32}    // A0 - D10  Start    3         G
   },   
   {
-    {41, 22, 21},   // A1 - D8   Start    End       Mute
+    {42, 22, 21},   // A1 - D8   Select   End       Mute
     {20, 11, 12},   // A1 - D9   Back     Up        Down
     {14, 13, 60}    // A1 - D10  Right    Left      Power
   }
@@ -163,7 +163,7 @@ void sendMsg(int num, int pin, int set) {
   uint8_t sRepeats = 2;
   int type = 2;     // [NEC, Sony, RC5, RC6]
 
-  if(mval <0 || mval > 1000){
+  if(mval <0 || mval > 1100){
     sCommand = 60;
   }else if( num == 1 && pin == 2 && set == 2 && 0){
     sCommand = 0x08;

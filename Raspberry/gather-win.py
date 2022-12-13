@@ -395,7 +395,7 @@ class GetherTown():
             try:
                 driver.find_element(By.CLASS_NAME, 'css-1rnf9c5').click()
                 sleep(0.1)
-                driver.find_elements(By.CLASS_NAME, 'css-ongu66')[2].click()
+                driver.find_elements(By.CLASS_NAME, 'css-ongu66')[3].click()
             except:
                 print("리스폰 실패")
 
@@ -496,7 +496,7 @@ class GetherTown():
                     try:
                         driver.find_element(By.CLASS_NAME, 'css-1rnf9c5').click()
                         sleep(0.1)
-                        driver.find_elements(By.CLASS_NAME, 'css-ongu66')[2].click()
+                        driver.find_elements(By.CLASS_NAME, 'css-ongu66')[3].click()
                     except:
                         print("리스폰 실패")
                 elif code == 60:
@@ -640,7 +640,7 @@ class GetherTown():
                     if code == 0 :
                         continue
 
-                    if(key == 'z') or key =='x' or code == 60:
+                    if(key == 'e') or key =='x' or code == 60:
                         duration = (datetime.now() - start_ms).total_seconds() * 1000 
                         print("exit btn click? ",int(duration),'ms')
                         if duration < 500:
@@ -684,6 +684,8 @@ class GetherTown():
                     elif code > 40 :
                         if (key == 'start'):
                             print("게임 시작")
+                            ActionChains(driver).key_down('5').pause(0.05).key_up('5').perform()
+                            sleep(0.05)
                             ActionChains(driver).key_down('1').perform()
                             sleep(0.05)
                             ActionChains(driver).key_up('1').perform()
@@ -721,17 +723,20 @@ class GetherTown():
                 except KeyError:
                     key = "ERROR"
 
-                print("code",code) 
-                while ser.readable():
-                    #print(ser.readable())
-                    res = ser.readline().strip().decode('utf-8')
-                    if res and res != '0':
-                        code2 = res
-                        print("code2",code2)
-                        if code != code2:
-                            break
-                    else:
-                        break
+                # print("code",code) 
+                # while ser.readable():
+                #     #print(ser.readable())
+                #     res = ser.readline().strip().decode('utf-8')
+                #     if res and res != '0':
+                #         code2 = res
+                #         print("code2",code2)
+                #         if code != code2:
+                #             break
+                #     else:
+                #         break
+
+                if key == 'x':
+                    delay = 500
                 
                 if key == 'm':
                     delay = 1000
