@@ -295,45 +295,64 @@ class GetherTown():
         allItems = []
         itemsCnt = 0
         allItems, itemsCnt = self.moveCustom(allItems, itemsCnt, True)
+        needSelect = True
         input_ms = datetime.now()
         key = ''
 
         while True:
-            input_ms, key, code = self.getSignal(key, input_ms, 500)
+            input_ms, key, code = self.getSignal(key, input_ms, 800)
             if code == 0 :
                 continue
 
             # key = keyboard.read_key()
             # print(key)
-            if(key == 'start'):
-                try:
-                    element = driver.find_element(By.CLASS_NAME, 'css-5mqzab')
+            if needSelect:
+                if(key == 'select'):
+                    try:
+                        element = driver.find_element(By.CLASS_NAME, 'css-5mqzab')
+                        element.click()
+                        print("Edit 완료")
+                        needSelect = False
+                    except:
+                        print(Exception)
+                elif(code == 13):           # 좌
+                    self.btnIndex[self.btnCategory] -= 1
+                    if self.btnIndex[self.btnCategory] < 0:
+                        self.btnIndex[self.btnCategory] = itemsCnt-1
+                    allItems, itemsCnt = self.moveCustom(allItems, itemsCnt, False)
+                elif(code == 14):           # 우
+                    self.btnIndex[self.btnCategory] += 1
+                    if self.btnIndex[self.btnCategory] == itemsCnt:
+                        self.btnIndex[self.btnCategory] = 0
+                    allItems, itemsCnt = self.moveCustom(allItems, itemsCnt, False)
+                elif(code == 12):           # 하
+                    self.btnCategory += 1
+                    if self.btnCategory > 3:
+                        self.btnCategory = 3
+                    allItems, itemsCnt = self.moveCustom(allItems, itemsCnt, True)
+                elif(code == 11):           # 상
+                    self.btnCategory -= 1
+                    if self.btnCategory < 0:
+                        self.btnCategory = 0
+                    allItems, itemsCnt = self.moveCustom(allItems, itemsCnt, True)
+            else:
+                if(key == 'start'):
+                    try:
+                        print("Start gather Request")
+                        break
+                    except:
+                        print(Exception)
+                elif key == 'select':
+                    element = driver.find_element(By.CLASS_NAME, 'css-s85wzu')
+                    print("Edit 모드로 진입")
                     element.click()
-                    print("Start gather Request")
-                    break
-                except:
-                    print(Exception)
-            elif(code == 13):           # 좌
-                self.btnIndex[self.btnCategory] -= 1
-                if self.btnIndex[self.btnCategory] < 0:
-                    self.btnIndex[self.btnCategory] = itemsCnt-1
-                allItems, itemsCnt = self.moveCustom(allItems, itemsCnt, False)
-            elif(code == 14):           # 우
-                self.btnIndex[self.btnCategory] += 1
-                if self.btnIndex[self.btnCategory] == itemsCnt:
-                    self.btnIndex[self.btnCategory] = 0
-                allItems, itemsCnt = self.moveCustom(allItems, itemsCnt, False)
-            elif(code == 12):           # 하
-                self.btnCategory += 1
-                if self.btnCategory > 3:
-                    self.btnCategory = 3
-                allItems, itemsCnt = self.moveCustom(allItems, itemsCnt, True)
-            elif(code == 11):           # 상
-                self.btnCategory -= 1
-                if self.btnCategory < 0:
                     self.btnCategory = 0
-                allItems, itemsCnt = self.moveCustom(allItems, itemsCnt, True)
-            elif code == 60:
+                    self.btnIndex = [2,0,0,0]
+                    allItems = []
+                    itemsCnt = 0
+                    allItems, itemsCnt = self.moveCustom(allItems, itemsCnt, True)
+                    needSelect = True
+            if code == 60:
                 self.goBlack()
                 print("goBlack")
                 return
@@ -476,7 +495,7 @@ class GetherTown():
                                 sleep(0.1)
                                 btnList = driver.find_elements(By.TAG_NAME,'button')
                                 print("Btn 검색",len(btnList))
-                                if len(btnList) > 14:
+                                if len(btnList) > 10:
 
                                     print("iframe 검색")
                                     iframeList = driver.find_elements(By.TAG_NAME,'iframe')
@@ -503,28 +522,6 @@ class GetherTown():
                     self.goBlack()
                     print("goBlack")
                     break
-
-                # if code > 40 and not Searching and needSearch:
-                #     print("닫기 버튼 검색",code)
-                #     Searching = True
-                #     try:
-                #         btnList = driver.find_elements(By.TAG_NAME,'button')
-                #         print("Btn 검색",len(btnList))
-                #         if len(btnList) > 14:
-                #             print("iframe 검색")
-                #             iframeList = driver.find_elements(By.TAG_NAME,'iframe')
-                #             print("iframe",len(iframeList),"개")
-                #             if(len(iframeList) > 0):
-                #                 exitBtn = driver.find_element(By.CLASS_NAME,'css-fib3fn')
-                #                 if self.goGame(iframeList, exitBtn):
-                #                     self.goBlack()
-                #                     print("goBlack")
-                #                     break
-                #     except Exception as e:
-                #         print("닫기버튼 없음",e)
-                #     Searching = False
-                #     needSearch = False
-
                 
 
             # sleep(insert_ms)
