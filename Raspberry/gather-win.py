@@ -198,6 +198,7 @@ class GetherTown():
         self.driver = driver
         wait = WebDriverWait(driver, 25)
         self.gatherMode = True
+        self.needCheck = True
         size = driver.get_window_size()
         width = size.get("width")
         height = size.get("height")
@@ -370,14 +371,42 @@ class GetherTown():
         # pyautogui.click()
         # sleep(uniform(0.1,0.5))
         # pyautogui.moveTo(0,1079) ## 절대좌표
+
+        if self.needCheck:
+            self.needCheck = False
+            sleep(1)
+            try:
+                spanList = driver.find_elements(By.TAG_NAME,'span')
+                print("spanList",len(spanList))
+                for span in spanList:
+                    className= span.get_attribute('class')
+                    print(className)
+                    if className == 'css-1h5x3dy':
+                        print("Find it!!!!!")
+                        span.click()
+                        break
+                
+            except Exception as e:
+                print("카메라 혹은 마이크 연결됨",e)
+                driver.find_element(By.CLASS_NAME, 'css-1h5x3dy').click()
+        else:         
+            sleep(0.1)
+            print("처음 위치로 리스폰")
+            try:
+                driver.find_element(By.CLASS_NAME, 'css-1rnf9c5').click()
+                sleep(0.1)
+                driver.find_elements(By.CLASS_NAME, 'css-ongu66')[2].click()
+            except:
+                print("리스폰 실패")
+
         
         
-        sleep(uniform(0.1,0.5))
-        try:
-            driver.find_element(By.CLASS_NAME, 'css-1h5x3dy').click()
-        except:
-            print("카메라 혹은 마이크 연결됨")
-        sleep(uniform(0.1,0.5))
+        # sleep(uniform(0.1,0.5))
+        # try:
+        #     driver.find_element(By.CLASS_NAME, 'css-1h5x3dy').click()
+        # except:
+        #     print("카메라 혹은 마이크 연결됨")
+        # sleep(uniform(0.1,0.5))
 
         print("리모콘 신호 대기")
         input_ms = datetime.now()
@@ -462,6 +491,14 @@ class GetherTown():
                             except Exception as e:
                                 print("닫기버튼 없음",e)
                             Searching = False
+                elif code == 41:                    
+                    print("처음 위치로 리스폰")
+                    try:
+                        driver.find_element(By.CLASS_NAME, 'css-1rnf9c5').click()
+                        sleep(0.1)
+                        driver.find_elements(By.CLASS_NAME, 'css-ongu66')[2].click()
+                    except:
+                        print("리스폰 실패")
                 elif code == 60:
                     self.goBlack()
                     print("goBlack")
