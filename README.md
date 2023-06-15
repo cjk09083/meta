@@ -9,7 +9,7 @@
 <img src="https://img.shields.io/badge/Dart-0175C2?style=flat-square&logo=Dart&logoColor=white"/>
 </div>
 
-## 메타버스 게임(Python, Arduino, Flutter) <a href="https://cjk09083.tistory.com/category/메타버스게임">작업일지(티스토리)</a>
+## 메타버스 게임(Python, Arduino) <a href="https://cjk09083.tistory.com/category/메타버스게임">작업일지(티스토리)</a>
 
 
 
@@ -18,8 +18,8 @@
 </div></br>
 
 ## 목적
-- 집에있는 TV와 리모콘, 스마트폰으로 즐길수 있는 메타버스 게임 제작
-- Flutter, Python으로 게임화면을, Arduino로 리모콘을 제작 
+- 집에있는 TV와 리모콘으로 즐길수 있는 메타버스 게임 제작
+- Python으로 게임화면을, Arduino로 리모콘을 제작 
 
 ## 담당
 - 리모콘 & 게임기 회로 설계
